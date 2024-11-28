@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import org.springframework.beans.factory.annotation.Autowired
 
 @Service
 class LeaderboardClient(
@@ -12,7 +13,8 @@ class LeaderboardClient(
     @Value("\${aoc.slack.year:#{T(java.time.Year).now().value}}")
     private val year: Int,
     @Value("\${aoc.slack.leaderboard-id}")
-    private val leaderBoardId: Int
+    private val leaderBoardId: Int,
+    @Autowired private val logger: Logger
 ) {
 
     fun getLeaderBoard(): LeaderBoard {

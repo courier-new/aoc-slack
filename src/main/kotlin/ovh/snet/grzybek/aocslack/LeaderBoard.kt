@@ -4,27 +4,42 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import org.springframework.beans.factory.annotation.Autowired
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class LeaderBoard(val ownerId: Int, val event: String, val members: Map<String, Member>) {
-    fun findNewStars(newLeaderBoard: LeaderBoard): List<Star> {
+data class LeaderBoard(
+    val ownerId: Int,
+    val event: String,
+    val members: Map<String, Member>
+) {
+    fun findNewStars(
+        newLeaderBoard: LeaderBoard,
+        @Autowired logger: Logger
+    ): List<Star> {
+        logger.log("Looking for new stars", Logger.LogLevel.INFO)
         val newStars = mutableListOf<Star>()
 
         for ((memberId, newMember) in newLeaderBoard.members) {
+            logger.log("Checking member $memberId", Logger.LogLevel.INFO)
             val oldMember = this.members[memberId] ?: continue
-            newStars.addAll(addStars(newMember, oldMember))
+            newStars.addAll(addStars(newMember, oldMember, logger))
         }
 
         return newStars
     }
 
-    private fun addStars(newMember: Member, oldMember: Member): List<Star> {
+    private fun addStars(
+        newMember: Member,
+        oldMember: Member,
+        logger: Logger
+    ): List<Star> {
         val newStars = mutableListOf<Star>()
         newMember.completionDayLevel.forEach { (day, starsMap) ->
             starsMap.forEach { (star, _) ->
                 val oldLevel = oldMember.completionDayLevel[day]?.get(star)
                 if (oldLevel == null) {
+                    logger.log("New star found for ${newMember.getMemberName()} on day $day", Logger.LogLevel.INFO)
                     newStars.add(Star(oldMember.getMemberName(), day.toInt(), star.toInt()))
                 }
             }
