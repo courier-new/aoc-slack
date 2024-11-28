@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import org.springframework.beans.factory.annotation.Autowired
+import kotlin.random.Random
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -15,7 +16,8 @@ data class LeaderBoard(
 ) {
     fun findNewStars(
         newLeaderBoard: LeaderBoard,
-        @Autowired logger: Logger
+        @Autowired logger: Logger,
+        useTestData: Boolean = false
     ): List<Star> {
         logger.log("Looking for new stars", Logger.LogLevel.INFO)
         val newStars = mutableListOf<Star>()
@@ -23,13 +25,31 @@ data class LeaderBoard(
         for ((memberId, newMember) in newLeaderBoard.members) {
             logger.log("Checking member $memberId", Logger.LogLevel.INFO)
             val oldMember = this.members[memberId] ?: continue
-            newStars.addAll(addStars(newMember, oldMember, logger))
+
+            if (useTestData) {
+                logger.log("Using test data", Logger.LogLevel.INFO)
+                val randomChance = Random.nextInt(3)
+                if (randomChance == 0) {
+                    logger.log("Randomly adding a new star for ${newMember.getMemberName()}", Logger.LogLevel.INFO)
+                    newStars.add(Star(newMember.getMemberName(), Random.nextInt(1, 25), 1))
+                }
+
+                val randomThreeStarsChance = Random.nextInt(8)
+                if (randomThreeStarsChance == 0) {
+                    logger.log("Randomly adding three new stars for ${newMember.getMemberName()}", Logger.LogLevel.INFO)
+                    newStars.add(Star(newMember.getMemberName(), Random.nextInt(1, 25), 2))
+                    newStars.add(Star(newMember.getMemberName(), Random.nextInt(1, 25), 1))
+                }
+            } else {
+                val newStarsForMember = findNewStarsForMember(newMember, oldMember, logger)
+                newStars.addAll(newStarsForMember)
+            }
         }
 
         return newStars
     }
 
-    private fun addStars(
+    private fun findNewStarsForMember(
         newMember: Member,
         oldMember: Member,
         logger: Logger
@@ -50,6 +70,12 @@ data class LeaderBoard(
     fun getSortedMembersByLocalScore(): List<Member> {
         return members.values.sortedWith(compareByDescending<Member> { it.localScore }.thenBy { it.getMemberName() })
     }
+
+    override fun toString(): String {
+        val membersString = members.values.joinToString(separator = ", ") { member ->
+            "${member.getMemberName()}: ${member.localScore}"
+        }
+        return "LeaderBoard(ownerId=$ownerId, event='$event', members=[$membersString])"
     }
 
     data class Member(
@@ -58,6 +84,7 @@ data class LeaderBoard(
         val stars: Int,
         @JsonProperty("local_score")
         val localScore: Int,
+        @JsonProperty("global_score")
         val globalScore: Int,
         @JsonProperty("last_star_ts")
         val lastStarTs: Long,
@@ -84,12 +111,17 @@ data class LeaderBoard(
         }
 
 
-        data class Level(val getStarTs: Long, val starIndex: Long)
+        data class Level(
+            @JsonProperty("get_star_ts")
+            val getStarTs: Long,
+            @JsonProperty("star_index")
+            val starIndex: Long
+        )
     }
 
     data class Star(val member: String, val day: Int, val star: Int) {
         fun getMessage(): String {
-            return "*${member}* received ${":star:".repeat(star)} for solving day ${day}'s challenge :tada:\n"
+            return "*${member}* received ${":star:".repeat(star)} for solving day ${day}'s challenge! :tada:"
         }
     }
 }

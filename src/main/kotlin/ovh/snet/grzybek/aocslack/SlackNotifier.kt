@@ -18,10 +18,11 @@ class SlackNotifier(
     fun sendSlackMessage(message: String) {
         val payload = "{\"text\":\"${message}\"}"
         if (!debugMode) {
-            logger.log("Sending message to Slack: $message", Logger.LogLevel.INFO)
+            logger.log("Sending message to Slack", Logger.LogLevel.INFO)
             slack.send(webhookUrl, payload)
         } else {
-            logger.log("Debug mode enabled, skipping sending message to Slack: $message", Logger.LogLevel.INFO)
+            logger.log("Debug mode enabled, skipping sending message to Slack", Logger.LogLevel.INFO)
         }
+        logger.log(message, Logger.LogLevel.DEBUG)
     }
 }

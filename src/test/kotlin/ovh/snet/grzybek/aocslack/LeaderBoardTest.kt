@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test
 
 
 class LeaderBoardTest {
+    private val logger = Logger(false)
 
     @Test
     fun shouldReturnStarWhenFirstStarIsCompleted() {
         val prevLeaderBoard = createLeaderBoardWithLevels(mapOf())
         val newLeaderBoard = createLeaderBoardWithLevels(mapOf("1" to mapOf("1" to createLevel())))
-        val stars = prevLeaderBoard.findNewStars(newLeaderBoard)
+        val stars = prevLeaderBoard.findNewStars(newLeaderBoard, logger)
         assertThat(stars).hasSize(1)
         assertThat(stars[0].member).isEqualTo("Grzybek")
         assertThat(stars[0].day).isEqualTo(1)
@@ -22,7 +23,7 @@ class LeaderBoardTest {
         val prevLeaderBoard = createLeaderBoardWithLevels(mapOf("1" to mapOf("1" to createLevel())))
         val newLeaderBoard =
             createLeaderBoardWithLevels(mapOf("1" to mapOf("1" to createLevel(), "2" to createLevel())))
-        val stars = prevLeaderBoard.findNewStars(newLeaderBoard)
+        val stars = prevLeaderBoard.findNewStars(newLeaderBoard, logger)
         assertThat(stars).hasSize(1)
         assertThat(stars[0].member).isEqualTo("Grzybek")
         assertThat(stars[0].day).isEqualTo(1)
@@ -34,7 +35,7 @@ class LeaderBoardTest {
         val prevLeaderBoard = createLeaderBoardWithLevels(mapOf())
         val newLeaderBoard =
             createLeaderBoardWithLevels(mapOf("1" to mapOf("1" to createLevel(), "2" to createLevel())))
-        val stars = prevLeaderBoard.findNewStars(newLeaderBoard)
+        val stars = prevLeaderBoard.findNewStars(newLeaderBoard, logger)
         assertThat(stars).hasSize(2)
         assertThat(stars[0].member).isEqualTo("Grzybek")
         assertThat(stars[0].day).isEqualTo(1)
@@ -50,7 +51,7 @@ class LeaderBoardTest {
         val prevLeaderBoard = createLeaderBoard(mapOf())
         val newLeaderBoard =
             createLeaderBoardWithLevels(mapOf("1" to mapOf("1" to createLevel(), "2" to createLevel())))
-        val stars = prevLeaderBoard.findNewStars(newLeaderBoard)
+        val stars = prevLeaderBoard.findNewStars(newLeaderBoard, logger)
         assertThat(stars).hasSize(0)
     }
 
@@ -64,9 +65,7 @@ class LeaderBoardTest {
     }
 
     fun createLeaderBoard(member: Map<String, LeaderBoard.Member>): LeaderBoard {
-        return LeaderBoard(
-            1, "aoc", member
-        )
+        return LeaderBoard(1, "aoc", member)
     }
 
     fun createMember(

@@ -9,7 +9,7 @@ class Logger(
     private val isDebugEnabled: Boolean
 ) {
     enum class LogLevel {
-        INFO, WARN, ERROR
+        DEBUG, INFO, WARN, ERROR
     }
 
     private val RESET = "\u001B[0m"
@@ -19,12 +19,13 @@ class Logger(
 
     fun log(message: String, level: LogLevel) {
         val formattedMessage = when (level) {
+            LogLevel.DEBUG -> "[DEBUG] $message"
             LogLevel.INFO -> "${INFO_COLOR}[INFO] $message${RESET}"
             LogLevel.WARN -> "${WARN_COLOR}[WARNING] $message${RESET}"
             LogLevel.ERROR -> "${ERROR_COLOR}[ERROR] $message${RESET}"
         }
 
-        if (isDebugEnabled || level != LogLevel.INFO) {
+        if (isDebugEnabled || level != LogLevel.DEBUG) {
             println(formattedMessage)
         }
     }
