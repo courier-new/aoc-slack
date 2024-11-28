@@ -48,7 +48,8 @@ data class LeaderBoard(
     }
 
     fun getSortedMembersByLocalScore(): List<Member> {
-        return members.values.sortedByDescending { it.localScore }
+        return members.values.sortedWith(compareByDescending<Member> { it.localScore }.thenBy { it.getMemberName() })
+    }
     }
 
     data class Member(
@@ -73,7 +74,13 @@ data class LeaderBoard(
         }
 
         fun getMessage(place: Int): String {
-            return "${place}) *${getMemberName()}* ${localScore}\n"
+            val podium = when (place) {
+                1 -> ":first_place_medal: "
+                2 -> ":second_place_medal: "
+                3 -> ":third_place_medal: "
+                else -> ""
+            }
+            return "${place}. ${podium}*${getMemberName()}* ${localScore}"
         }
 
 
@@ -82,7 +89,7 @@ data class LeaderBoard(
 
     data class Star(val member: String, val day: Int, val star: Int) {
         fun getMessage(): String {
-            return "*${member}* received ${":star:".repeat(star)} for solving ${day} challenge :tada:\n"
+            return "*${member}* received ${":star:".repeat(star)} for solving day ${day}'s challenge :tada:\n"
         }
     }
 }
