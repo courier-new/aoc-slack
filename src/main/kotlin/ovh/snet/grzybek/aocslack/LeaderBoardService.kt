@@ -11,7 +11,7 @@ class LeaderBoardService(
     private val onlyActiveUsers: Boolean,
 ) {
 
-    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:0 0 5 * * ?}")
+    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:0 0 5 * * ?}", zone = "America/New_York")
     fun notifyCurrentLeaderBoard() {
         val newLeaderBoard = leaderboardClient.getLeaderBoard()
         var ranking = newLeaderBoard.getSortedMembersByLocalScore()
