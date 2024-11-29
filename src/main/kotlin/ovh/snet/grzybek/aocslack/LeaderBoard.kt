@@ -102,12 +102,24 @@ data class LeaderBoard(
 
         fun getMessage(place: Int): String {
             val podium = when (place) {
-                1 -> ":first_place_medal: "
-                2 -> ":second_place_medal: "
-                3 -> ":third_place_medal: "
+                1 -> ":first_place_medal:"
+                2 -> ":second_place_medal:"
+                3 -> ":third_place_medal:"
                 else -> ""
             }
-            return "${place}. *${getMemberName()}* ${podium}${localScore}"
+            val placeSpacer = when (place) {
+                in 1..9 -> "  "
+                else -> ""
+            }
+            val scoreSpacer = when (localScore) {
+                in 1000..9999 -> ""
+                in 100..999 -> "  "
+                in 10..99 -> "    "
+                in 0..9 -> "      "
+                else -> ""
+            }
+            val scoreCount = if (localScore == 1) "point" else "points"
+            return "${placeSpacer}${place}. ${scoreSpacer}${localScore} ${scoreCount} - ${podium}${getMemberName()}"
         }
 
 
