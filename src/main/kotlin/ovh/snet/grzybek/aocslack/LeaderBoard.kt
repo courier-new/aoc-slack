@@ -68,7 +68,7 @@ data class LeaderBoard(
     }
 
     fun getSortedMembersByLocalScore(): List<Member> {
-        return members.values.sortedWith(compareByDescending<Member> { it.localScore }.thenBy { it.getMemberName() })
+        return members.values.sortedWith(compareByDescending<Member> { it.localScore }.thenBy { it.getMemberName().toLowerCase() })
     }
 
     override fun toString(): String {
@@ -107,7 +107,7 @@ data class LeaderBoard(
                 3 -> ":third_place_medal: "
                 else -> ""
             }
-            return "${place}. ${podium}*${getMemberName()}* ${localScore}"
+            return "${place}. *${getMemberName()}* ${podium}${localScore}"
         }
 
 

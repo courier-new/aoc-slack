@@ -14,9 +14,15 @@ class SlackNotifier(
     @Autowired private val logger: Logger
 ) {
     private val slack: Slack = Slack.getInstance()
+    private val ICON_URL = "https://adventofcode.com/favicon.png"
 
     fun sendSlackMessage(message: String) {
-        val payload = "{\"text\":\"${message}\"}"
+        val payload = """
+        {
+            "text": "${message}",
+            "icon_url": "${ICON_URL}"
+        }
+        """.trimIndent()
         if (!debugMode) {
             logger.log("Sending message to Slack", Logger.LogLevel.INFO)
             slack.send(webhookUrl, payload)
