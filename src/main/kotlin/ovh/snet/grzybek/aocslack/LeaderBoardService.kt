@@ -13,7 +13,7 @@ class LeaderBoardService(
     @Autowired private val logger: Logger
 ) {
 
-    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:0 0 0 1-25 12 ?}", zone = "America/New_York")
+    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:15 1 0 1-25 12 ?}", zone = "America/New_York")
     fun notifyCurrentLeaderBoard() {
         logger.log("STARTING LEADERBOARD REFRESH JOB", Logger.LogLevel.INFO)
         val newLeaderBoard = leaderboardClient.getLeaderBoard()
