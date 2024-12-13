@@ -55,12 +55,15 @@ data class LeaderBoard(
         logger: Logger
     ): List<Star> {
         val newStars = mutableListOf<Star>()
-        newMember.completionDayLevel.forEach { (day, starsMap) ->
-            starsMap.forEach { (star, _) ->
-                val oldLevel = oldMember.completionDayLevel[day]?.get(star)
+        // Sort by days and iterate in order.
+        newMember.completionDayLevel.keys.map { it.toInt() }.sorted().forEach { day ->
+            val starsMap = newMember.completionDayLevel[day.toString()] ?: return@forEach
+            // Sort by star number and iterate in order.
+            starsMap.keys.map { it.toInt() }.sorted().forEach { star ->
+                val oldLevel = oldMember.completionDayLevel[day.toString()]?.get(star.toString())
                 if (oldLevel == null) {
                     logger.log("New star found for ${newMember.getMemberName()} on day $day", Logger.LogLevel.INFO)
-                    newStars.add(Star(oldMember.getMemberName(), day.toInt(), star.toInt()))
+                    newStars.add(Star(oldMember.getMemberName(), day, star))
                 }
             }
         }
