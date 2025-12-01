@@ -10,7 +10,7 @@ COPY . .
 RUN ./gradlew clean build
 
 # Stage 2: Create the final image
-FROM openjdk:17
+FROM eclipse-temurin:17-jre
 
 # Set the working directory inside the container
 WORKDIR /app
