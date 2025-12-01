@@ -19,7 +19,7 @@ class ReceivedStarsService(
     // AOC_SLACK_STARS_CRON
     // Run at second 0, minute 10 and 40, on every hour of the day, not
     // specific to days of the week.
-    @Scheduled(cron = "\${aoc.slack.stars.cron:0 10,40 * * * ?}", zone = "America/New_York")
+    @Scheduled(cron = "\${aoc.slack.stars.cron:0 10,40 * * 12 ?}", zone = "America/New_York")
     fun notifyReceivedStars() {
         logger.log("STARTING RECEIVED STARS JOB", Logger.LogLevel.INFO)
         val newLeaderBoard = leaderboardClient.getLeaderBoard()
