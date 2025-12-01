@@ -33,7 +33,7 @@ class LeaderboardClient(
             getLeaderBoardFromWeb()
         }
 
-        logger.log(leaderBoard.toString(), Logger.LogLevel.DEBUG)
+        logger.log(leaderBoard.toString(), Logger.LogLevel.INFO)
         return leaderBoard
     }
 

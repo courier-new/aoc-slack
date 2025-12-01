@@ -25,6 +25,6 @@ class SlackNotifier(
         } else {
             logger.log("Debug mode enabled, skipping sending message to Slack", Logger.LogLevel.INFO)
         }
-        logger.log(message, Logger.LogLevel.DEBUG)
+        logger.log(message, Logger.LogLevel.INFO)
     }
 }
