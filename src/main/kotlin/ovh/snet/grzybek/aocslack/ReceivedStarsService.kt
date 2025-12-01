@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Value
 class ReceivedStarsService(
     private val leaderboardClient: LeaderboardClient,
     private val slackNotifier: SlackNotifier,
+    // AOC_SLACK_USE_TEST_DATA
     @Value("\${aoc.slack.use-test-data:false}") private val useTestData: Boolean,
     @Autowired private val logger: Logger
 ) {
 
     private var leaderBoard: LeaderBoard = leaderboardClient.getLeaderBoard()
 
-    @Scheduled(cron = "\${aoc.slack.stars.cron:30 10,40 * * * ?}", zone = "America/New_York")
+    // AOC_SLACK_STARS_CRON
+    // Run at second 0, minute 10 and 40, on every hour of the day, not
+    // specific to days of the week.
+    @Scheduled(cron = "\${aoc.slack.stars.cron:0 10,40 * * * ?}", zone = "America/New_York")
     fun notifyReceivedStars() {
         logger.log("STARTING RECEIVED STARS JOB", Logger.LogLevel.INFO)
         val newLeaderBoard = leaderboardClient.getLeaderBoard()

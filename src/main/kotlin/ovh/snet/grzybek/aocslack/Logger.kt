@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class Logger(
+    // AOC_SLACK_DEBUG_MODE
     @Value("\${aoc.slack.debug-mode:false}")
     private val isDebugEnabled: Boolean
 ) {

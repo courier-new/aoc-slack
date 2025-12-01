@@ -14,10 +14,13 @@ import java.nio.file.Paths
 class LeaderboardClient(
     @Value("\${aoc.slack.session}")
     private val session: String,
+    // AOC_SLACK_YEAR
     @Value("\${aoc.slack.year:#{T(java.time.Year).now().value}}")
     private val year: Int,
+    // AOC_SLACK_LEADERBOARD_ID
     @Value("\${aoc.slack.leaderboard-id}")
     private val leaderBoardId: Int,
+    // AOC_SLACK_USE_TEST_DATA
     @Value("\${aoc.slack.use-test-data:false}")
     private val useTestData: Boolean,
     @Autowired private val logger: Logger

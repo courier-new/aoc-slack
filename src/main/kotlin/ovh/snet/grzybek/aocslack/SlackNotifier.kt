@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 
 @Service
 class SlackNotifier(
+    // AOC_SLACK_WEBHOOK_URL
     @Value("\${aoc.slack.webhook.url}")
     private val webhookUrl: String,
+    // AOC_SLACK_DEBUG_MODE
     @Value("\${aoc.slack.debug-mode:false}")
     private val debugMode: Boolean,
     @Autowired private val logger: Logger

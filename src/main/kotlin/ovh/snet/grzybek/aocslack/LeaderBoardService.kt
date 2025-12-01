@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service
 @Service
 class LeaderBoardService(
     private val leaderboardClient: LeaderboardClient, private val slackNotifier: SlackNotifier,
+    // AOC_SLACK_ONLY_ACTIVE_USERS
     @Value("\${aoc.slack.only-active-users:false}")
     private val onlyActiveUsers: Boolean,
     @Autowired private val logger: Logger
 ) {
-
+    // AOC_SLACK_LEADERBOARD_CRON
+    // Run at second 15, minute 5, hour 0 (midnight), on days 1-31 of December,
+    // not specific to days of the week.
     @Scheduled(cron = "\${aoc.slack.leaderboard.cron:15 5 0 1-25 12 ?}", zone = "America/New_York")
     fun notifyCurrentLeaderBoard() {
         logger.log("STARTING LEADERBOARD REFRESH JOB", Logger.LogLevel.INFO)

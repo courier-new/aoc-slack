@@ -11,7 +11,9 @@ class DailyPostService(
     private val slackNotifier: SlackNotifier,
     @Autowired private val logger: Logger
 ) {
-    @Scheduled(cron = "\${aoc.slack.daily-post.cron:0 0 0 1-25 12 ?}", zone = "America/New_York")
+    // Run at second 0, minute 0, hour 0 (midnight), on days 1-12 of December,
+    // not specific to days of the week.
+    @Scheduled(cron = "\${aoc.slack.daily-post.cron:0 0 0 1-12 12 ?}", zone = "America/New_York")
     fun notifySlack() {
         logger.log("STARTING DAILY POST JOB", Logger.LogLevel.INFO)
         val (year, day) = LocalDate.now().let { it.year to it.dayOfMonth }
