@@ -14,9 +14,9 @@ class LeaderBoardService(
     @Autowired private val logger: Logger
 ) {
     // AOC_SLACK_LEADERBOARD_CRON
-    // Run at second 15, minute 5, hour 0 (midnight), every day of December,
-    // not specific to days of the week.
-    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:15 5 0 * 12 ?}", zone = "America/New_York")
+    // Run at second 15, minute 5, hour 0 (midnight), every day of December
+    // except the first day, not specific to days of the week.
+    @Scheduled(cron = "\${aoc.slack.leaderboard.cron:15 5 0 2-31 12 ?}", zone = "America/New_York")
     fun notifyCurrentLeaderBoard() {
         logger.log("STARTING LEADERBOARD REFRESH JOB", Logger.LogLevel.INFO)
         val newLeaderBoard = leaderboardClient.getLeaderBoard()
