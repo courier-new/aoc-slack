@@ -24,7 +24,21 @@ data class LeaderBoard(
 
         for ((memberId, newMember) in newLeaderBoard.members) {
             logger.log("Checking member $memberId", Logger.LogLevel.INFO)
-            val oldMember = this.members[memberId] ?: continue
+            val oldMember = this.members[memberId]
+
+            if (oldMember == null) {
+                // New member joined -- add all their stars
+                logger.log("New member ${newMember.getMemberName()} joined, adding all their stars", Logger.LogLevel.INFO)
+                // Sort by days and iterate in order.
+                newMember.completionDayLevel.keys.map { it.toInt() }.sorted().forEach { day ->
+                    val starsMap = newMember.completionDayLevel[day.toString()] ?: return@forEach
+                    // Sort by star number and iterate in order.
+                    starsMap.keys.map { it.toInt() }.sorted().forEach { star ->
+                        newStars.add(Star(newMember.getMemberName(), day, star))
+                    }
+                }
+                continue
+            }
 
             if (useTestData) {
                 logger.log("Using test data", Logger.LogLevel.INFO)
